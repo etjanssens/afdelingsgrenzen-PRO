@@ -215,7 +215,6 @@ search_json = json.dumps(search_data, ensure_ascii=False)
 custom_html = f"""
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Condensed+One&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- Afdelingsgrenzen data (LineStrings) voor JS-laag -->
 <script>var _afdBorderData = {afd_lines_geojson};</script>
 
@@ -229,7 +228,7 @@ custom_html = f"""
   }}
   .leaflet-interactive:focus {{ outline: none !important; }}
 
-  /* ── Toolbar: zoom + / − / PNG (linksboven) ── */
+  /* ── Toolbar: zoom + / − (linksboven) ── */
   #kaart-toolbar {{
     position: fixed; top: 12px; left: 12px; z-index: 1000;
     display: flex; flex-direction: column; gap: 3px;
@@ -242,14 +241,6 @@ custom_html = f"""
     box-shadow: 0 1px 5px rgba(0,0,0,0.2);
   }}
   .toolbar-btn:hover {{ background: #f0f0f0; }}
-  #download-btn {{
-    background: var(--rood) !important; color: white !important;
-    font-family: var(--font-kop) !important; font-size: 11px !important;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    border-color: rgba(0,0,0,0.15) !important;
-  }}
-  #download-btn:hover {{ background: #cc0000 !important; }}
-  #download-btn:disabled {{ background: #aaa !important; cursor: wait; }}
 
   /* ── Titel (bovenaan midden) ── */
   #kaart-titel {{
@@ -363,7 +354,6 @@ custom_html = f"""
     }}
     #kaart-toolbar {{ top: 8px; left: 8px; }}
     .toolbar-btn {{ width: 38px; height: 38px; font-size: 22px; }}
-    #download-btn {{ font-size: 10px !important; }}
     .gem-popup {{
       max-width: calc(100vw - 30px);
       left: 10px !important; right: 10px; top: auto !important;
@@ -374,11 +364,10 @@ custom_html = f"""
   }}
 </style>
 
-<!-- Toolbar linksboven: zoom + / − / PNG -->
+<!-- Toolbar linksboven: zoom + / − -->
 <div id="kaart-toolbar">
   <button class="toolbar-btn" id="zoom-in"    title="Inzoomen">+</button>
   <button class="toolbar-btn" id="zoom-uit"   title="Uitzoomen">&minus;</button>
-  <button class="toolbar-btn" id="download-btn" title="Download als PNG">&#8595;&thinsp;PNG</button>
 </div>
 
 <div id="kaart-titel">Afdelingsgrenzen Progressief Nederland</div>
@@ -585,20 +574,6 @@ window.addEventListener('load', function() {{
     if (bounds) kaart.fitBounds(bounds, {{ padding: [60, 60] }});
   }}
 
-  // ── Download PNG ──────────────────────────────────────────────────────────
-  document.getElementById('download-btn').addEventListener('click', function() {{
-    var btn = this;
-    btn.textContent = '⏳'; btn.disabled = true;
-    var mapId = document.querySelector('.leaflet-container').id;
-    html2canvas(document.getElementById(mapId), {{ useCORS: true, scale: 2, logging: false }})
-      .then(function(canvas) {{
-        var a = document.createElement('a');
-        a.download = 'afdelingsgrenzen_PRO.png';
-        a.href = canvas.toDataURL('image/png');
-        a.click();
-        btn.innerHTML = '&#8595;&thinsp;PNG'; btn.disabled = false;
-      }}).catch(function() {{ btn.innerHTML = '&#8595;&thinsp;PNG'; btn.disabled = false; }});
-  }});
 
 }});
 </script>
